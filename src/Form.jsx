@@ -1,4 +1,25 @@
-function Form({ metrics }) {
+import { useActionState } from "react";
+import supabase from "./supabase-client";
+
+export default function Form({ metrics }) {
+  const [error, submitAction, isPending] = useActionState(
+    async (previousState, formData) => {
+      //Action logic
+      const newDeal = {
+        name: formData.get("name"),
+        value: formData.get("value"),
+      }
+
+      const { error } = await supabase
+      .from('sales_deals')
+      .insert(newDeal); 
+
+      if (error) {
+        console.error('Error inserting data:', error);
+        return Error(error)
+      } 
+    }, null // inital state
+  )
 
   const generateOptions = () => {
     return metrics.map((metric) => (
@@ -11,6 +32,7 @@ function Form({ metrics }) {
   return (
     <div className="add-form-container">
       <form
+      action={submitAction}
         aria-label="Add new sales deal"
         aria-describedby="form-description"
       >
@@ -26,8 +48,8 @@ function Form({ metrics }) {
             name="name"
             defaultValue={metrics?.[0]?.name || ''}
             aria-required="true"
-            // aria-invalid=
-            // disabled=
+            aria-invalid={error ? "true" : "false"}
+            disabled={isPending}
           >
             {generateOptions()}
           </select>
@@ -44,25 +66,25 @@ function Form({ metrics }) {
             min="0"
             step="10"
             aria-required="true"
-            // aria-invalid=
+            aria-invalid={error ? "true" : "false"}
+            disabled={isPending}
             aria-label="Deal amount in dollars"
-            // disabled=
           />
         </label>
 
         <button 
           type="submit" 
-          // disabled=
-          // aria-busy=
+          disabled={isPending}
+          aria-busy={isPending}
         >
-          Add Deal
-          {/*'Adding deal' when pending*/}
+          {isPending ? "Adding..." : "Add Deal"}
         </button>
       </form>
-
-      {/* Error message */}
+      {error && (
+        <div role='alert' className="error-message">
+          {error.message}
+        </div>
+      )}
     </div>
   );
 };
-
-export default Form;
