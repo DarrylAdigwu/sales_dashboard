@@ -25,7 +25,7 @@ export const Form = () => {
     }, null // inital state
   )
 
-  const currentUser = users.find((user) => user.id === session?.user?.id)
+  const currentUser = users.find((user) => user.id === session?.user?.id);
 
   const generateOptions = () => {
     return users
