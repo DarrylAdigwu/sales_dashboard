@@ -2,15 +2,15 @@ import { useActionState } from "react";
 import supabase from "../supabase-client";
 import { useAuth } from "../context/AuthContext";
 
-export const Form = ({ metrics }) => {
-  const { users } = useAuth();
+export const Form = () => {
+  const { users, session } = useAuth();
  console.log(users)
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
-      const currentUser = users.find(user => user.name === formData.get("name"))
+      const user = users.find(user => user.name === formData.get("name"))
       //Action logic
       const newDeal = {
-        user_id: currentUser.id,
+        user_id: user.id,
         value: formData.get("value"),
       }
 
@@ -25,8 +25,12 @@ export const Form = ({ metrics }) => {
     }, null // inital state
   )
 
+  const currentUser = users.find((user) => user.id === session?.user?.id)
+
   const generateOptions = () => {
-    return users.map((user) => (
+    return users
+      .filter((user) => user.account_type === 'rep')
+      .map((user) => (
       <option key={user.id} value={user.name}>
         {user.name}
       </option>
@@ -45,12 +49,29 @@ export const Form = ({ metrics }) => {
           the amount.
         </div>
 
-        <label htmlFor="deal-name">
+        {currentUser?.account_type === 'rep' ? (
+           <label htmlFor="deal-name">
           Name:
           <select
             id="deal-name"
             name="name"
-            defaultValue={metrics?.[0]?.name || ''}
+            value={currentUser?.name || ''}
+            readOnly
+            className="rep-name-input"
+            aria-label="Sales representative name"
+            aria-readonly="true"
+          >
+            {generateOptions()}
+          </select>
+        </label>
+        ) :
+        (
+           <label htmlFor="deal-name">
+          Name:
+          <select
+            id="deal-name"
+            name="name"
+            defaultValue={users[0]?.name || ''}
             aria-required="true"
             aria-invalid={error ? "true" : "false"}
             disabled={isPending}
@@ -58,6 +79,8 @@ export const Form = ({ metrics }) => {
             {generateOptions()}
           </select>
         </label>
+        )}
+       
 
         <label htmlFor="deal-value">
           Amount: $

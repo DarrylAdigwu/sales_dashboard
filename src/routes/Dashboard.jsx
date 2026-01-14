@@ -33,12 +33,17 @@ export const Dashboard = () => {
 
   async function fetchMetrics() {
     try {
-      const { data, error } = await supabase.from('sales_deals').select(
-        `
-          user_id,
-          value.sum()
+      const { data, error } = await supabase
+        .from('sales_deals')
+        .select(
           `
-      );
+          value.sum(),
+          ...user_profiles!inner(
+            name
+          )
+          `,
+        );
+
       if (error) {
         throw error;
       }
@@ -112,7 +117,7 @@ export const Dashboard = () => {
           />
         </div>
       </div>
-      <Form metrics={metrics} />
+      <Form />
     </div>
   );
 };
