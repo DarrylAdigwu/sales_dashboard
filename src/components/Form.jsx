@@ -1,7 +1,7 @@
 import { useActionState } from "react";
 import supabase from "../supabase-client";
 
-export default function Form({ metrics }) {
+export const Form = ({ metrics }) => {
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
       //Action logic
