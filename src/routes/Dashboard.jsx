@@ -35,7 +35,7 @@ export const Dashboard = () => {
     try {
       const { data, error } = await supabase.from('sales_deals').select(
         `
-          name,
+          user_id,
           value.sum()
           `
       );

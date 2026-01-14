@@ -1,12 +1,16 @@
 import { useActionState } from "react";
 import supabase from "../supabase-client";
+import { useAuth } from "../context/AuthContext";
 
 export const Form = ({ metrics }) => {
+  const { users } = useAuth();
+ console.log(users)
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
+      const currentUser = users.find(user => user.name === formData.get("name"))
       //Action logic
       const newDeal = {
-        name: formData.get("name"),
+        user_id: currentUser.id,
         value: formData.get("value"),
       }
 
@@ -22,9 +26,9 @@ export const Form = ({ metrics }) => {
   )
 
   const generateOptions = () => {
-    return metrics.map((metric) => (
-      <option key={metric.name} value={metric.name}>
-        {metric.name}
+    return users.map((user) => (
+      <option key={user.id} value={user.name}>
+        {user.name}
       </option>
     ));
   };
