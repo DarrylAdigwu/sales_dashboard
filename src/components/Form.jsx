@@ -1,5 +1,5 @@
 import { useActionState } from "react";
-import supabase from "./supabase-client";
+import supabase from "../supabase-client";
 
 export default function Form({ metrics }) {
   const [error, submitAction, isPending] = useActionState(
@@ -16,7 +16,7 @@ export default function Form({ metrics }) {
 
       if (error) {
         console.error('Error inserting data:', error);
-        return Error(error)
+        return new Error(error)
       } 
     }, null // inital state
   )
