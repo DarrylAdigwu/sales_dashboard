@@ -4,6 +4,7 @@ import { SignIn } from "./components/SignIn.jsx";
 import { Header } from "./components/Header.jsx";
 import { SignUp } from "./components/SignUp.jsx";
 import { RootRedirect } from "./routes/RootRedirect.jsx";
+import { ProtectedRoute } from "./components/ProtectedRoute.jsx";
 
 export const router = createBrowserRouter([
   {
@@ -21,10 +22,10 @@ export const router = createBrowserRouter([
   {
     path: "/dashboard",
     element: (
-      <>
+      <ProtectedRoute>
         <Header />
         <Dashboard />
-      </>
+      </ProtectedRoute>
   )
   }
 ]);
