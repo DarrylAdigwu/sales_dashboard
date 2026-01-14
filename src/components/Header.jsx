@@ -3,7 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router";
 
 export const Header = () => {
-  const { signOut } = useAuth();
+  const { signOut, session } = useAuth();
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ export const Header = () => {
 
     const { success, error } = await signOut();
     if(success) {
-      navigate("/")
+      navigate("/signin")
     } else {
       setError(error.message)
     }
@@ -26,15 +26,18 @@ export const Header = () => {
           role="navigation"
           aria-label="User account navigation"
         >
-
-          <button aria-label="Sign out of your account" onClick={handleSignOut}>
-            Sign out
-          </button>
+          <h2>
+            <span className="sr-only">Logged in as:</span>
+            {session?.user?.email}
+          </h2>
           {error && (
             <div role="role" className="error-message" id="signout-error">
               {error}
             </div>
           )}
+          <button onClick={handleSignOut} aria-label="Sign out of your account">
+            Sign out
+          </button>
         </div>
         <h1>
           <svg

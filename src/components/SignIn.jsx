@@ -4,7 +4,7 @@ import supabase from "../supabase-client.js";
 import { useNavigate, Link } from "react-router";
 
 export const SignIn = () => {
-  const { signInUser } = useAuth();
+  const { signInUser, session } = useAuth();
   const navigate = useNavigate();
 
   const [error, submitAction, isPending] = useActionState(

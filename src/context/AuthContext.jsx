@@ -5,7 +5,7 @@ import supabase from "../supabase-client";
 const AuthContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-  const [session, setSession] = useState("manager");
+  const [session, setSession] = useState(undefined);
 
     useEffect(() => {
       const getInitialSession = async () => {
@@ -14,7 +14,7 @@ export const AuthContextProvider = ({ children }) => {
           if(error){
             throw new Error(error);
           }
-          console.log(data)
+          
           setSession(data.session)
         } catch (err) {
           console.error(`Error getting session from supabase ${err}`)
